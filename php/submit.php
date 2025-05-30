@@ -41,7 +41,7 @@ class SubmitUser {
             }
 
         } catch (PDOExeption $e) {
-            echo $e;
+            echo "username already exist";
         }
 
     }
