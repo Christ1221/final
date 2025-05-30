@@ -1,41 +1,55 @@
 <?php
-$servername = "sql211.infinityfree.com";
-$username = "if0_37557160";
-$password = "CO5eJugDjKuV";
-$db_name = "if0_37557160_books_db";
 
-$conn = new mysqli($servername, $username, $password, $db_name);
+include 'connect.php';
 
-if ($conn->connect_error) {
-    echo "Error";
-} else{
-    echo "Connected Successfully";
+class SubmitUser {
+
+    private $pdo;
+    private $data;
+   
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+        $this->data = $_POST;
+    }
+
+    public function sanitize($data) {
+        return htmlspecialchars(strip_tags(trim($data)));
+    }
+
+    public function insertUser() {
+        $username = $this->sanitize($this->data['username']);
+        $passwd = password_hash($this->sanitize($this->data['password']), PASSWORD_DEFAULT);
+        $fullname = $this->sanitize($this->data['fullname']);
+        $email = $this->sanitize($this->data['email']);
+
+        try {
+
+            $stmt = $this->pdo->prepare("INSERT INTO user (username, passwd, fname, email) 
+            VALUES (:username, :passwd, :fname, :email)");
+
+            $stmt->execute([
+                ':username' => $username,
+                ':passwd' => $passwd,
+                ':fname' => $fullname,
+                ':email' => $email
+            ]);
+
+            if ($stmt) {
+                echo 'Submitted Successfully';
+            } else {
+                echo 'Error';
+            }
+
+        } catch (PDOExeption $e) {
+            echo $e;
+        }
+
+    }
+
 }
 
-if ($_SERVER["REQUEST_METHOD"] = "POST") {
+$manager = new SubmitUser($pdo);
 
-$titleId = $_POST["title"];
-$authorId = $_POST["author"];
-$genreId = $_POST["genre"];
-$publisherId = $_POST["publisher"];
-$publisherAddressId = $_POST["publisherAddress"];
-$stockId = $_POST["stock"];
-
-$sql = $conn->prepare("INSERT INTO book (title, author, genre, publisher, publisherAddress, stock)
-VALUES (?, ?, ?, ?, ?, ?)");
-
-$sql->bind_param("ssssss", $titleId, $authorId, $genreId, $publisherId, $publisherAddressId, $stockId);
-
-echo 'Added Successfully';
-
-$sql->execute();
-
-$sql->close();
-
-}
-
-$conn->close();
-
-
+$manager->insertUser();
 
 ?>
