@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - DigiBook</title>
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
 
@@ -13,19 +14,25 @@
             <div class="left-section">
                 <div class="logo-group">
                    
-                    <img src="assets/LOGO.png" alt="LCC-B Logo" class="logo">
+                    <img src="assets/LOGO.png" alt="LCC-B Logo">
+                    <h2>Hello, welcome!</h2>
                 </div>
-                <h2>Hello, <br> welcome!</h2>
-                <form action="dashboard.html" method="POST">
-                    <input type="text" placeholder="Username" name="username" required>
-                    <input type="password" placeholder="Password" name="password" required>
+                
+                <form action="/php/login.php" method="POST">
+                    <div class="input_login">
+                        <input type="text" placeholder="Username" name="username" required>
+                        <input type="password" placeholder="Password" name="password" required>
+                    </div>
                     <div class="options">
-                        <label><input type="checkbox"> Remember Me</label>
+                        <div>
+                            <input type="checkbox">
+                            <label> Remember Me</label>
+                        </div>
                         <a href="#">Forgot Password?</a>
                     </div>
                     <button type="submit">Login</button>
                     <div class="register-link">
-                        <p>Don't have an account? <a href="register.html">Register Now</a></p>
+                        <p>Don’t have an account? <a href="register.html">Register Now</a></p>
                     </div>
                 </form>
             </div>

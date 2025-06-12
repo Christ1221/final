@@ -18,26 +18,30 @@ class SubmitUser {
 
     public function insertUser() {
         $username = $this->sanitize($this->data['username']);
-        $passwd = password_hash($this->sanitize($this->data['password']), PASSWORD_DEFAULT);
-        $fullname = $this->sanitize($this->data['fullname']);
-        $email = $this->sanitize($this->data['email']);
+        $passwd = $this->sanitize($this->data['password']);
 
         try {
 
-            $stmt = $this->pdo->prepare("INSERT INTO user_tbl(username, email, passwd, fname) 
-            VALUES (:username, :email, :passwd, :fname)");
+            $stmt = $this->pdo->prepare("SELECT * FROM user_tbl WHERE username = :username LIMIT 1");
 
             $stmt->execute([
-                ':username' => $username,
-                ':passwd' => $passwd,
-                ':fname' => $fullname,
-                ':email' => $email
+                ':username' => $username
             ]);
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (empty($result)) {
+                echo 'username not found';
+                exit;
+            }
+            
+            $hashpasswd = $result['passwd'];
 
-            if ($stmt) {
-                echo 'Submitted Successfully';
+            if (password_verify($passwd, $hashpasswd)) {
+                echo 'Log in Successfully';
+                header('location: /dashboard.php');
             } else {
-                echo 'Error';
+                echo 'Wron';
             }
 
         } catch (PDOExeption $e) {
